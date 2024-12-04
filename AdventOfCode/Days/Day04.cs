@@ -77,7 +77,7 @@ public class Day04 : BaseDay
                     {
                         var xDirection = x - coordinate.Item1;
                         var yDirection = y - coordinate.Item2;
-                        var diaganolSlice = ArrayHelper.GetDiaganolSlice(coordinate.Item1, coordinate.Item2, (coordinate.Item1 + (xDirection * 2)), (coordinate.Item2 + (yDirection * 2)), _input);
+                        var diaganolSlice = ArrayHelper.GetDiaganolSlice(coordinate.Item1, coordinate.Item2, coordinate.Item1 + (xDirection * 2), coordinate.Item2 + (yDirection * 2), _input);
 
                         if (new string(diaganolSlice) == "MAS" || new string(diaganolSlice) == "SAM")
                             masCount++;

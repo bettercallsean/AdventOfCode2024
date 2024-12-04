@@ -3,12 +3,12 @@ namespace AdventOfCode.Days;
 public class Day02 : BaseDay
 {
     private readonly List<List<int>> _input;
-    
+
     public Day02()
     {
         _input = File.ReadAllLines(InputFilePath).Select(x => x.Split(' ').Select(int.Parse).ToList()).ToList();
     }
-    
+
     public override ValueTask<string> Solve_1()
     {
         var safeReportCount = 0;

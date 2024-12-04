@@ -10,15 +10,15 @@ public class Day01 : BaseDay
         var input = File.ReadAllLines(InputFilePath);
         _leftInput = [];
         _rightInput = [];
-        
+
         foreach (var location in input)
         {
             var locations = location.Split("   ");
-            
+
             _leftInput.Add(int.Parse(locations[0]));
             _rightInput.Add(int.Parse(locations[1]));
         }
-        
+
         _leftInput.Sort();
         _rightInput.Sort();
     }
@@ -28,7 +28,7 @@ public class Day01 : BaseDay
     public override ValueTask<string> Solve_2()
     {
         var rightInputOccurrences = _rightInput.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
-        
+
         return new(_leftInput.Sum(locationCount => locationCount * rightInputOccurrences.GetValueOrDefault(locationCount, 0)).ToString());
     }
 }
