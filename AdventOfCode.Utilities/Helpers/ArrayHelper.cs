@@ -110,6 +110,16 @@ public static class ArrayHelper
         return surroundingCoordinates.Where(coordinate => IsValidCoordinate(coordinate.X, coordinate.Y, array)).Select(coordinate => (coordinate.X, coordinate.Y));
     }
 
+    public static IEnumerable<(int, int)> GetSurroundingDiaganolValues<T>(int x, int y, T[][] array)
+    {
+        var surroundingCoordinates = new List<(int X, int Y)>
+        {
+            (x - 1, y - 1), (x + 1, y - 1), (x + 1 , y + 1), (x - 1, y + 1)
+        };
+
+        return surroundingCoordinates.Where(coordinate => IsValidCoordinate(coordinate.X, coordinate.Y, array)).Select(coordinate => (coordinate.X, coordinate.Y));
+    }
+
     public static void CreateArrayTextFile<T>(T[][] array)
     {
         File.WriteAllText(DebugTextFilePath, string.Empty);

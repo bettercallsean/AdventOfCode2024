@@ -17,14 +17,11 @@ public class Day04 : BaseDay
         for (var y = 0; y < _input.GetLength(0); y++)
         {
             var line = _input[y];
-            var xLocations = new List<int>();
 
             for (var x = 0; x < line.Length; x++)
             {
                 if (line[x] == 'X')
                 {
-                    xLocations.Add(x);
-
                     // Right
                     if (ArrayHelper.IsValidCoordinate(x + 3, line) && new string(line[x..(x + 4)]) == "XMAS")
                         count++;
@@ -48,7 +45,7 @@ public class Day04 : BaseDay
                             count++;
 
                         // Top Right && Bottom Left
-                        if (ArrayHelper.IsValidCoordinate(x + i, (y + i * -1), _input) && new string(ArrayHelper.GetDiaganolSlice(x, y, x + i, (y + i * -1), _input)) == "XMAS")
+                        if (ArrayHelper.IsValidCoordinate(x + i, (y + i * -1), _input) && new string(ArrayHelper.GetDiaganolSlice(x, y, x + i, y + i * -1, _input)) == "XMAS")
                             count++;
                     }
                 }
@@ -60,6 +57,38 @@ public class Day04 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
-        throw new NotImplementedException();
+        var count = 0;
+
+        for (var y = 0; y < _input.GetLength(0); y++)
+        {
+            var line = _input[y];
+
+            for (var x = 0; x < line.Length; x++)
+            {
+                if (line[x] == 'A')
+                {
+                    var surroundingCharacterCoordinates = ArrayHelper.GetSurroundingDiaganolValues(x, y, _input);
+
+                    if (surroundingCharacterCoordinates.Count() != 4)
+                        continue;
+
+                    var masCount = 0;
+                    foreach (var coordinate in surroundingCharacterCoordinates.Where(x => _input[x.Item2][x.Item1] == 'M'))
+                    {
+                        var xDirection = x - coordinate.Item1;
+                        var yDirection = y - coordinate.Item2;
+                        var diaganolSlice = ArrayHelper.GetDiaganolSlice(coordinate.Item1, coordinate.Item2, (coordinate.Item1 + (xDirection * 2)), (coordinate.Item2 + (yDirection * 2)), _input);
+
+                        if (new string(diaganolSlice) == "MAS" || new string(diaganolSlice) == "SAM")
+                            masCount++;
+                    }
+
+                    if (masCount == 2)
+                        count++;
+                }
+            }
+        }
+
+        return new(count.ToString());
     }
 }
