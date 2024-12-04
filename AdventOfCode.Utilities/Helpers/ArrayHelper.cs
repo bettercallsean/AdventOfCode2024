@@ -26,7 +26,7 @@ public static class ArrayHelper
         return [.. slice];
     }
 
-    public static T[] GetDiaganolSlice<T>(int x, int y, int endX, int endY, T[][] array)
+    public static T[] GetDiagonalSlice<T>(int x, int y, int endX, int endY, T[][] array)
     {
         var slice = new List<T>();
         var absoluteLength = Math.Abs(y - endY);
