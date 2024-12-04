@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Inputs\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AdventOfCode.Utilities\AdventOfCode.Utilities.csproj" />
   </ItemGroup>
 

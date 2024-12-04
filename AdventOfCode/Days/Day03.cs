@@ -14,12 +14,7 @@ public partial class Day03 : BaseDay
     {
         var functions = FunctionRegex().Matches(_input);
 
-        var result = 0;
-
-        foreach (var function in functions.ToList())
-        {
-            result += int.Parse(function.Groups[1].Value) * int.Parse(function.Groups[2].Value);
-        }
+        var result = functions.ToList().Sum(function => int.Parse(function.Groups[1].Value) * int.Parse(function.Groups[2].Value));
 
         return new(result.ToString());
     }
@@ -46,8 +41,6 @@ public partial class Day03 : BaseDay
 
             if (doFunction)
                 result += int.Parse(function.Groups[1].Value) * int.Parse(function.Groups[2].Value);
-            else
-                continue;
         }
 
         return new(result.ToString());
