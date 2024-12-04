@@ -39,18 +39,18 @@ public partial class Day03 : BaseDay
 
         var doDontIndex = 0;
         var result = 0;
-        var lastFunction = DoFunction;
+        var doFunction = true;
 
         foreach (var function in functions)
         {
             if (function.Index >= doDonts[doDontIndex].Index)
             {
-                lastFunction = doDonts[doDontIndex].Value;
+                doFunction = doDonts[doDontIndex].Value == DoFunction;
                 if (doDontIndex < doDonts.Count - 1)
                     doDontIndex++;
             }
 
-            if (lastFunction == DoFunction)
+            if (doFunction)
                 result += int.Parse(function.Groups[1].Value) * int.Parse(function.Groups[2].Value);
             else
                 continue;
