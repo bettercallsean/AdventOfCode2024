@@ -2,8 +2,8 @@
 public class Day05 : BaseDay
 {
     private readonly Dictionary<int, List<int>> _order;
-    private readonly List<List<int>> _pages;
-    private readonly List<List<int>> _invalidPages;
+    private readonly List<List<int>> _updates;
+    private readonly List<List<int>> _invalidUpdate;
 
     public Day05()
     {
@@ -15,29 +15,29 @@ public class Day05 : BaseDay
             .GroupBy(x => x.Item1)
             .ToDictionary(x => x.Key, x => x.Select(x => x.Item2).Order().ToList());
 
-        _pages = [.. input[1].TrimEnd()
+        _updates = [.. input[1].TrimEnd()
             .Split(Environment.NewLine)
             .Select(x => x.Split(',').Select(int.Parse)
             .ToList())];
 
-        _invalidPages = [];
+        _invalidUpdate = [];
     }
 
     public override ValueTask<string> Solve_1()
     {
         var result = 0;
 
-        foreach (var page in _pages)
+        foreach (var update in _updates)
         {
-            var validPage = IsValidPage(page);
+            var validUpdate = IsValidUpdate(update);
 
-            if (!validPage)
+            if (!validUpdate)
             {
-                _invalidPages.Add(page);
+                _invalidUpdate.Add(update);
                 continue; ;
             }
 
-            result += page[page.Count / 2];
+            result += update[update.Count / 2];
         }
 
         return new(result.ToString());
@@ -47,56 +47,56 @@ public class Day05 : BaseDay
     {
         var result = 0;
 
-        foreach (var page in _invalidPages)
+        foreach (var update in _invalidUpdate)
         {
-            while (!IsValidPage(page))
+            while (!IsValidUpdate(update))
             {
-                for (var i = 0; i < page.Count; i++)
+                for (var i = 0; i < update.Count; i++)
                 {
-                    var item = page[i];
+                    var page = update[i];
 
-                    for (var j = i + 1; j < page.Count; j++)
+                    for (var j = i + 1; j < update.Count; j++)
                     {
-                        var item2 = page[j];
+                        var page2 = update[j];
 
-                        if (_order.TryGetValue(item2, out var value) && value.Contains(item))
+                        if (_order.TryGetValue(page2, out var pagesToComeAfter) && pagesToComeAfter.Contains(page))
                         {
-                            page[i] = item2;
-                            page[j] = item;
+                            update[i] = page2;
+                            update[j] = page;
                             break;
                         }
                     }
                 }
             }
 
-            result += page[page.Count / 2];
+            result += update[update.Count / 2];
         }
 
         return new(result.ToString());
     }
 
-    private bool IsValidPage(List<int> page)
+    private bool IsValidUpdate(List<int> update)
     {
-        for (var i = 0; i < page.Count; i++)
+        for (var i = 0; i < update.Count; i++)
         {
-            var item = page[i];
-            var itemOutOfOrder = false;
+            var page = update[i];
+            var updateOutOfOrder = false;
 
-            for (var j = i + 1; j < page.Count; j++)
+            for (var j = i + 1; j < update.Count; j++)
             {
-                var item2 = page[j];
+                var item2 = update[j];
 
-                if (item == item2)
+                if (page == item2)
                     continue;
 
-                if (_order.TryGetValue(item2, out var value) && value.Contains(item))
+                if (_order.TryGetValue(item2, out var pagesToComeAfter) && pagesToComeAfter.Contains(page))
                 {
-                    itemOutOfOrder = true;
+                    updateOutOfOrder = true;
                     break;
                 }
             }
 
-            if (itemOutOfOrder)
+            if (updateOutOfOrder)
                 return false;
         }
 
