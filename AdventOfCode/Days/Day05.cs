@@ -3,7 +3,7 @@ public class Day05 : BaseDay
 {
     private readonly Dictionary<int, List<int>> _order;
     private readonly List<List<int>> _updates;
-    private readonly List<List<int>> _invalidUpdate;
+    private readonly List<List<int>> _invalidUpdates;
 
     public Day05()
     {
@@ -20,7 +20,7 @@ public class Day05 : BaseDay
             .Select(x => x.Split(',').Select(int.Parse)
             .ToList())];
 
-        _invalidUpdate = [];
+        _invalidUpdates = [];
     }
 
     public override ValueTask<string> Solve_1()
@@ -33,8 +33,8 @@ public class Day05 : BaseDay
 
             if (!validUpdate)
             {
-                _invalidUpdate.Add(update);
-                continue; ;
+                _invalidUpdates.Add(update);
+                continue;
             }
 
             result += update[update.Count / 2];
@@ -47,7 +47,7 @@ public class Day05 : BaseDay
     {
         var result = 0;
 
-        foreach (var update in _invalidUpdate)
+        foreach (var update in _invalidUpdates)
         {
             while (!IsValidUpdate(update))
             {
@@ -85,9 +85,6 @@ public class Day05 : BaseDay
             for (var j = i + 1; j < update.Count; j++)
             {
                 var item2 = update[j];
-
-                if (page == item2)
-                    continue;
 
                 if (_order.TryGetValue(item2, out var pagesToComeAfter) && pagesToComeAfter.Contains(page))
                 {
