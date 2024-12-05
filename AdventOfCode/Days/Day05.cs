@@ -59,12 +59,12 @@ public class Day05 : BaseDay
                     {
                         var page2 = update[j];
 
-                        if (_order.TryGetValue(page2, out var pagesToComeAfter) && pagesToComeAfter.Contains(page))
-                        {
-                            update[i] = page2;
-                            update[j] = page;
-                            break;
-                        }
+                        if (!_order.TryGetValue(page2, out var pagesToComeAfter) || !pagesToComeAfter.Contains(page)) 
+                            continue;
+                        
+                        update[i] = page2;
+                        update[j] = page;
+                        break;
                     }
                 }
             }
@@ -86,11 +86,11 @@ public class Day05 : BaseDay
             {
                 var item2 = update[j];
 
-                if (_order.TryGetValue(item2, out var pagesToComeAfter) && pagesToComeAfter.Contains(page))
-                {
-                    updateOutOfOrder = true;
-                    break;
-                }
+                if (!_order.TryGetValue(item2, out var pagesToComeAfter) || !pagesToComeAfter.Contains(page)) 
+                    continue;
+                
+                updateOutOfOrder = true;
+                break;
             }
 
             if (updateOutOfOrder)
