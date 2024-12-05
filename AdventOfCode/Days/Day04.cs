@@ -67,13 +67,13 @@ public class Day04 : BaseDay
             {
                 if (line[x] == 'A')
                 {
-                    var surroundingCharacterCoordinates = ArrayHelper.GetSurroundingDiaganolValues(x, y, _input);
+                    var surroundingCharacterCoordinates = ArrayHelper.GetSurroundingDiaganolValues(y, x, _input);
 
                     if (surroundingCharacterCoordinates.Count() != 4)
                         continue;
 
                     var masCount = 0;
-                    foreach (var coordinate in surroundingCharacterCoordinates.Where(x => _input[x.Item2][x.Item1] == 'M'))
+                    foreach (var coordinate in surroundingCharacterCoordinates.Where(x => _input[x.Item1][x.Item2] == 'M'))
                     {
                         var xDirection = x - coordinate.Item1;
                         var yDirection = y - coordinate.Item2;
