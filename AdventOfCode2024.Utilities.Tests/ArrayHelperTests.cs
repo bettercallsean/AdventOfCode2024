@@ -38,7 +38,7 @@ public sealed class ArrayHelperTests
     public void IsValidCoordinate1DArray_WhenPassedValidCoordinate_ReturnsTrue(int x)
     {
         // Arrange
-        var array = new int[] { 1, 2, 3 };
+        var array = new[] { 1, 2, 3 };
 
         // Assert
         Assert.IsTrue(ArrayHelper.IsValidCoordinate(x, array));
@@ -50,9 +50,25 @@ public sealed class ArrayHelperTests
     public void IsValidCoordinate1DArray_WhenPassedInvalidCoordinate_ReturnsFalse(int x)
     {
         // Arrange
-        var array = new int[] { 1, 2, 3 };
+        var array = new[] { 1, 2, 3 };
 
         // Assert
         Assert.IsFalse(ArrayHelper.IsValidCoordinate(x, array));
+    }
+    
+    [TestMethod]
+    [DataRow(0, new[] {1, 4, 7})]
+    [DataRow(1, new[] {2, 5, 8})]
+    [DataRow(2, new[] {3, 6, 9})]
+    public void GetVerticalSlice_WhenPassedValidYValues_ReturnsVerticalSlice(int x, int[] expectedArray)
+    {
+        // Arrange
+        var array = new int[][] { [1, 2, 3], [4, 5, 6], [7, 8, 9] };
+
+        // Act
+        var slice = ArrayHelper.GetVerticalSlice(x, 0, 2, array);
+        
+        // Assert
+        CollectionAssert.AreEqual(expectedArray, slice);
     }
 }

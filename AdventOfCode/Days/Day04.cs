@@ -66,7 +66,7 @@ public class Day04 : BaseDay
             {
                 if (line[x] != 'A') continue;
                 
-                var surroundingCharacterCoordinates = ArrayHelper.GetSurroundingDiaganolValues(x, y, _input).ToList();
+                var surroundingCharacterCoordinates = ArrayHelper.GetSurroundingDiagonalValues(x, y, _input).ToList();
 
                 if (surroundingCharacterCoordinates.Count != 4)
                     continue;

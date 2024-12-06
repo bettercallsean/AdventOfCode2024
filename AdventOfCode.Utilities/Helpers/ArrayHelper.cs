@@ -18,7 +18,7 @@ public static class ArrayHelper
     {
         var slice = new List<T>();
         var absoluteLength = Math.Abs(y - endY);
-        for (int i = 0; i <= absoluteLength; i++)
+        for (var i = 0; i <= absoluteLength; i++)
         {
             slice.Add(array[y + (endY > y ? 1 : -1) * i][x]);
         }
@@ -32,7 +32,7 @@ public static class ArrayHelper
         var absoluteLength = Math.Abs(y - endY);
 
 
-        for (int i = 0; i <= absoluteLength; i++)
+        for (var i = 0; i <= absoluteLength; i++)
         {
             slice.Add(array[y + (endY > y ? 1 : -1) * i][x + (endX > x ? 1 : -1) * i]);
         }
@@ -110,7 +110,7 @@ public static class ArrayHelper
         return surroundingCoordinates.Where(coordinate => IsValidCoordinate(coordinate.X, coordinate.Y, array)).Select(coordinate => (coordinate.X, coordinate.Y));
     }
 
-    public static IEnumerable<(int, int)> GetSurroundingDiaganolValues<T>(int x, int y, T[][] array)
+    public static IEnumerable<(int, int)> GetSurroundingDiagonalValues<T>(int x, int y, T[][] array)
     {
         var surroundingCoordinates = new List<(int X, int Y)>
         {
@@ -124,9 +124,9 @@ public static class ArrayHelper
     {
         File.WriteAllText(DebugTextFilePath, string.Empty);
 
-        for (int i = 0; i < array.Length; i++)
+        for (var i = 0; i < array.Length; i++)
         {
-            for (int j = 0; j < array[0].Length; j++)
+            for (var j = 0; j < array[0].Length; j++)
             {
                 File.AppendAllText(DebugTextFilePath, $"{array[i][j]}");
             }
