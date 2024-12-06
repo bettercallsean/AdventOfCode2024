@@ -1,4 +1,3 @@
-using System.Security.Principal;
 using AdventOfCode.Utilities.Helpers;
 
 namespace AdventOfCode.Days;
@@ -13,8 +12,11 @@ public class Day06 : BaseDay
         { 'v', '<' },
         { '<', '^' }
     };
-    private (int, int) _position;
-    
+    private readonly (int, int) _startingPosition;
+    private (int, int) _currentPosition;
+    private char _direction;
+    private char[][] _grid;
+
     public Day06()
     {
         _input = File.ReadAllLines(InputFilePath).Select(line => line.ToCharArray()).ToArray();
@@ -24,64 +26,44 @@ public class Day06 : BaseDay
             for (var j = 0; j < _input[0].Length; j++)
             {
                 if (_input[i][j] != '^') continue;
-                
-                _position = (i, j);
+
+                _startingPosition = (i, j);
                 break;
             }
         }
     }
-    
+
     public override ValueTask<string> Solve_1()
     {
-        var outOfBounds = false;
-        var direction = '^';
+        var validPosition = true;
         var count = 0;
-        
-        while (!outOfBounds)
-        {
-            var directionToMove = direction is '^' or '<' ? -1 : 1;
+        _direction = '^';
+        _grid = _input.Select(x => x.ToArray()).ToArray();
+        _currentPosition = _startingPosition;
 
-            switch (direction)
+        while (validPosition)
+        {
+            var directionToMove = _direction is '^' or '<' ? -1 : 1;
+
+            switch (_direction)
             {
                 case '^' or 'v':
-                {
-                    if (ArrayHelper.IsValidCoordinate(_position.Item1 + directionToMove, _position.Item2, _input))
                     {
-                        _position.Item1 += directionToMove;
+                        validPosition = IsValidPosition(directionToMove, 0);
 
-                        if (_input[_position.Item1][_position.Item2] == '#')
-                        {
-                            _position = (_position.Item1 - directionToMove, _position.Item2);
-                            direction = _positionRotation[direction];
-                        }
+                        break;
                     }
-                    else
-                        outOfBounds = true;
-
-                    break;
-                }
                 case '>' or '<':
-                {
-                    if (ArrayHelper.IsValidCoordinate(_position.Item1, _position.Item2 + directionToMove, _input))
                     {
-                        _position.Item2 += directionToMove;
+                        validPosition = IsValidPosition(0, directionToMove);
 
-                        if (_input[_position.Item1][_position.Item2] == '#')
-                        {
-                            _position = (_position.Item1, _position.Item2 - directionToMove);
-                            direction = _positionRotation[direction];
-                        }
+                        break;
                     }
-                    else
-                        outOfBounds = true;
-
-                    break;
-                }
             }
-            
-            if (_input[_position.Item1][_position.Item2] == 'x') continue;
-                        
-            _input[_position.Item1][_position.Item2] = 'x';
+
+            if (!validPosition || _grid[_currentPosition.Item1][_currentPosition.Item2] == 'x') continue;
+
+            _grid[_currentPosition.Item1][_currentPosition.Item2] = 'x';
             count++;
         }
 
@@ -90,6 +72,41 @@ public class Day06 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
-        throw new NotImplementedException();
+    }
+
+    private bool IsValidPosition(int iDirection, int jDirection)
+    {
+        if (ArrayHelper.IsValidCoordinate(_currentPosition.Item1 + iDirection, _currentPosition.Item2 + jDirection, _grid))
+        {
+            _currentPosition.Item1 += iDirection;
+            _currentPosition.Item2 += jDirection;
+
+            if (_grid[_currentPosition.Item1][_currentPosition.Item2] == '#')
+            {
+                _direction = _positionRotation[_direction];
+                _currentPosition = (_currentPosition.Item1 - iDirection, _currentPosition.Item2 - jDirection);
+            }
+
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private bool BlockadeExists(int iDirection, int jDirection)
+    {
+        var nextI = _currentPosition.Item1 + iDirection;
+        var nextJ = _currentPosition.Item2 + jDirection;
+
+        while (ArrayHelper.IsValidCoordinate(nextI, nextJ, _grid))
+        {
+            if (_grid[nextI][nextJ] == '#')
+                return true;
+
+            nextI = nextI + iDirection;
+            nextJ = nextJ + jDirection;
+        }
+
+        return false;
     }
 }
