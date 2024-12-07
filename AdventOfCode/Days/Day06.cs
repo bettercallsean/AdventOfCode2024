@@ -13,11 +13,9 @@ public class Day06 : BaseDay
         { '<', '^' }
     };
     private readonly (int, int) _startingPosition;
-    private readonly (int, int) _nonExistantBlockade = (int.MaxValue, int.MaxValue);
+    private readonly HashSet<(int, int)> _traversedNodes;
     private (int, int) _currentPosition;
     private char _direction;
-    private char[][] _grid;
-    private Dictionary<char, List<(int, int)>> _knownTurnPoints;
 
     public Day06()
     {
@@ -30,160 +28,101 @@ public class Day06 : BaseDay
                 if (_input[i][j] != '^') continue;
 
                 _startingPosition = (i, j);
+                _input[i][j] = '.';
                 break;
             }
         }
+
+        _traversedNodes = new HashSet<(int, int)>();
     }
 
     public override ValueTask<string> Solve_1()
     {
         var validPosition = true;
-        var count = 0;
         _direction = '^';
-        _grid = _input.Select(x => x.ToArray()).ToArray();
         _currentPosition = _startingPosition;
-        _knownTurnPoints = new()
-        {
-            {'^', [] },
-            {'>', [] },
-            {'v', [] },
-            {'<', [] },
-        };
 
         while (validPosition)
         {
             var directionToMove = _direction is '^' or '<' ? -1 : 1;
 
-            switch (_direction)
+            validPosition = _direction switch
             {
-                case '^' or 'v':
-                    {
-                        validPosition = IsValidPosition(directionToMove, 0);
+                '^' or 'v' => IsValidPosition(directionToMove, 0),
+                '>' or '<' => IsValidPosition(0, directionToMove),
+                _ => true
+            };
 
-                        break;
-                    }
-                case '>' or '<':
-                    {
-                        validPosition = IsValidPosition(0, directionToMove);
+            if (!validPosition || _currentPosition == _startingPosition) continue;
 
-                        break;
-                    }
-            }
+            _traversedNodes.Add(_currentPosition);
+        }
 
-            if (!validPosition || _grid[_currentPosition.Item1][_currentPosition.Item2] == 'x') continue;
+        return new(_traversedNodes.Count.ToString());
+    }
 
-            _grid[_currentPosition.Item1][_currentPosition.Item2] = 'x';
-            count++;
+    public override ValueTask<string> Solve_2()
+    {
+        var count = 0;
+        foreach (var position in _traversedNodes)
+        {
+            _direction = '^';
+            _currentPosition = _startingPosition;
+            _input[position.Item1][position.Item2] = '#';
+
+            if (CausesLoop())
+                count++;
+            
+            _input[position.Item1][position.Item2] = '.';
         }
 
         return new(count.ToString());
     }
 
-    public override ValueTask<string> Solve_2()
+    private bool CausesLoop()
     {
         var validPosition = true;
-        var potentialBlockageCoordinates = new List<(int, int)>();
-        var count = 0;
-        _grid = _input.Select(x => x.ToArray()).ToArray();
-        _direction = '^';
-        _currentPosition = _startingPosition;
-        _knownTurnPoints = new()
-        {
-            {'^', [] },
-            {'>', [] },
-            {'v', [] },
-            {'<', [] },
-        };
-
+        var traversedNodes =  new Dictionary<(int, int), HashSet<char>>();
         while (validPosition)
         {
             var directionToMove = _direction is '^' or '<' ? -1 : 1;
 
-            switch (_direction)
+            validPosition = _direction switch
             {
-                case '^' or 'v':
-                    {
-                        validPosition = IsValidPosition(directionToMove, 0);
+                '^' or 'v' => IsValidPosition(directionToMove, 0),
+                '>' or '<' => IsValidPosition(0, directionToMove),
+                _ => true
+            };
+            
+            if(!validPosition) continue;
 
-                        var blockadeCoordinates = BlockadeExists(0, _direction is 'v' ? -1 : 1);
-                        if (blockadeCoordinates != _nonExistantBlockade)
-                        {
-                            if (_knownTurnPoints[_positionRotation[_direction]].Contains(blockadeCoordinates))
-                                potentialBlockageCoordinates.Add((_currentPosition.Item1 + directionToMove, _currentPosition.Item2));
-                            else
-                            {
-
-                            }
-                        }
-
-                        //ArrayHelper.ArrayPrinter(_grid);
-
-                        break;
-                    }
-                case '>' or '<':
-                    {
-                        validPosition = IsValidPosition(0, directionToMove);
-
-                        var blockadeCoordinates = BlockadeExists(_direction is '<' ? -1 : 1, 0);
-                        if (blockadeCoordinates != _nonExistantBlockade && _knownTurnPoints[_positionRotation[_direction]].Contains(blockadeCoordinates))
-                        {
-                            potentialBlockageCoordinates.Add((_currentPosition.Item1, _currentPosition.Item2 + directionToMove));
-                        }
-
-                        break;
-                    }
+            if (traversedNodes.TryGetValue(_currentPosition, out HashSet<char> value))
+            {
+                    if (traversedNodes[_currentPosition].Contains(_direction)) return true;
+                    
+                value.Add(_direction);
             }
+            else
+                traversedNodes.Add(_currentPosition, [_direction]);
 
-            if (!validPosition || _grid[_currentPosition.Item1][_currentPosition.Item2] == 'x') continue;
-
-            _grid[_currentPosition.Item1][_currentPosition.Item2] = 'x';
-            count++;
-
-            //Console.Clear();
-            //ArrayHelper.ArrayPrinter(_grid);
         }
-
-        return new(potentialBlockageCoordinates.Count.ToString());
+        
+        return false;
     }
 
     private bool IsValidPosition(int iDirection, int jDirection)
     {
-        if (ArrayHelper.IsValidCoordinate(_currentPosition.Item1 + iDirection, _currentPosition.Item2 + jDirection, _grid))
-        {
-            _currentPosition.Item1 += iDirection;
-            _currentPosition.Item2 += jDirection;
+        if (!ArrayHelper.IsValidCoordinate(_currentPosition.Item1 + iDirection, _currentPosition.Item2 + jDirection,
+                _input)) return false;
+        
+        _currentPosition.Item1 += iDirection;
+        _currentPosition.Item2 += jDirection;
 
-            if (_grid[_currentPosition.Item1][_currentPosition.Item2] == '#')
-            {
-                _currentPosition = (_currentPosition.Item1 - iDirection, _currentPosition.Item2 - jDirection);
+        if (_input[_currentPosition.Item1][_currentPosition.Item2] != '#') return true;
+            
+        _currentPosition = (_currentPosition.Item1 - iDirection, _currentPosition.Item2 - jDirection);
+        _direction = _positionRotation[_direction];
 
-                _knownTurnPoints[_direction].Add(_currentPosition);
-
-                _direction = _positionRotation[_direction];
-
-            }
-
-            return true;
-        }
-        else
-            return false;
+        return true;
     }
-
-    private (int, int) BlockadeExists(int iDirection, int jDirection)
-    {
-        var nextI = _currentPosition.Item1 + iDirection;
-        var nextJ = _currentPosition.Item2 + jDirection;
-
-        while (ArrayHelper.IsValidCoordinate(nextI, nextJ, _grid))
-        {
-            if (_grid[nextI][nextJ] == '#')
-                return (nextI - iDirection, nextJ - jDirection);
-
-            nextI += iDirection;
-            nextJ += jDirection;
-        }
-
-        return _nonExistantBlockade;
-    }
-
 }
