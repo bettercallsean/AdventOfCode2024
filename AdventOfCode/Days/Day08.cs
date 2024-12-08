@@ -82,13 +82,13 @@ public class Day08 : BaseDay
 
     private List<(int, int)> GetValidAntinodeLocations(int start, int end, (int, int) antenna1, (int, int) antenna2)
     {
-        var euclideanDistance = (antenna1.Item1 - antenna2.Item1, antenna1.Item2 - antenna2.Item2);
+        var distance = (antenna1.Item1 - antenna2.Item1, antenna1.Item2 - antenna2.Item2);
 
         return Enumerable.Range(start, end)
             .SelectMany(x => new List<(int, int)>
             {
-                (antenna1.Item1 + euclideanDistance.Item1 * x, antenna1.Item2 + euclideanDistance.Item2 * x),
-                (antenna2.Item1 - euclideanDistance.Item1 * x, antenna2.Item2 - euclideanDistance.Item2 * x)
+                (antenna1.Item1 + distance.Item1 * x, antenna1.Item2 + distance.Item2 * x),
+                (antenna2.Item1 - distance.Item1 * x, antenna2.Item2 - distance.Item2 * x)
             })
             .Where(x => ArrayHelper.IsValidCoordinate(x.Item1, x.Item2, _input))
             .ToList();
