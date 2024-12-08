@@ -39,14 +39,8 @@ public class Day08 : BaseDay
                 for (var i = antennaIndex + 1; i < antennaType.Value.Count; i++)
                 {
                     var adjacentAntenna = antennaType.Value[i];
-                    var euclideanDistance = (antenna.Item1 - adjacentAntenna.Item1, antenna.Item2 - adjacentAntenna.Item2);
-
-                    var validAntinodes = new List<(int, int)>
-                        {
-                            (antenna.Item1 + euclideanDistance.Item1, antenna.Item2 + euclideanDistance.Item2),
-                            (adjacentAntenna.Item1 - euclideanDistance.Item1, adjacentAntenna.Item2 - euclideanDistance.Item2)
-                        }
-                        .Where(x => ArrayHelper.IsValidCoordinate(x.Item1, x.Item2, _input));
+                    
+                    var validAntinodes = GetValidAntinodeLocations(1, 1, antenna, adjacentAntenna);
 
                     foreach (var antinode in validAntinodes)
                         antinodes.Add(antinode); 
@@ -72,17 +66,8 @@ public class Day08 : BaseDay
                 for (var i = antennaIndex + 1; i < antennaType.Value.Count; i++)
                 {
                     var adjacentAntenna = antennaType.Value[i];
-                    var euclideanDistance = (antenna.Item1 - adjacentAntenna.Item1, antenna.Item2 - adjacentAntenna.Item2);
 
-                    antinodes.Add(antenna);
-                    antinodes.Add(adjacentAntenna);
-                    
-                    var validAntinodes = Enumerable.Range(1, _input[0].Length).SelectMany(x => new List<(int, int)>
-                    {
-                        (antenna.Item1 + euclideanDistance.Item1 * x, antenna.Item2 + euclideanDistance.Item2 * x),
-                        (adjacentAntenna.Item1 - euclideanDistance.Item1 * x, adjacentAntenna.Item2 - euclideanDistance.Item2 * x)
-                    })
-                    .Where(x => ArrayHelper.IsValidCoordinate(x.Item1, x.Item2, _input));
+                    var validAntinodes = GetValidAntinodeLocations(0, _input.Length, antenna, adjacentAntenna);
 
                     foreach (var antinode in validAntinodes)
                         antinodes.Add(antinode); 
@@ -93,5 +78,19 @@ public class Day08 : BaseDay
         }
         
         return new(antinodes.Count.ToString());
+    }
+
+    private List<(int, int)> GetValidAntinodeLocations(int start, int end, (int, int) antenna1, (int, int) antenna2)
+    {
+        var euclideanDistance = (antenna1.Item1 - antenna2.Item1, antenna1.Item2 - antenna2.Item2);
+
+        return Enumerable.Range(start, end)
+            .SelectMany(x => new List<(int, int)>
+            {
+                (antenna1.Item1 + euclideanDistance.Item1 * x, antenna1.Item2 + euclideanDistance.Item2 * x),
+                (antenna2.Item1 - euclideanDistance.Item1 * x, antenna2.Item2 - euclideanDistance.Item2 * x)
+            })
+            .Where(x => ArrayHelper.IsValidCoordinate(x.Item1, x.Item2, _input))
+            .ToList();
     }
 }
