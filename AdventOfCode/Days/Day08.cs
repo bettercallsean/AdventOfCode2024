@@ -61,6 +61,37 @@ public class Day08 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
-        throw new NotImplementedException();
+        var antinodes = new HashSet<(int, int)>();
+        
+        foreach (var antennaType in _antennaTypes)
+        {
+            var antennaIndex = 0;
+
+            foreach (var antenna in antennaType.Value)
+            {
+                for (var i = antennaIndex + 1; i < antennaType.Value.Count; i++)
+                {
+                    var adjacentAntenna = antennaType.Value[i];
+                    var euclideanDistance = (antenna.Item1 - adjacentAntenna.Item1, antenna.Item2 - adjacentAntenna.Item2);
+
+                    antinodes.Add(antenna);
+                    antinodes.Add(adjacentAntenna);
+                    
+                    var validAntinodes = Enumerable.Range(1, _input[0].Length).SelectMany(x => new List<(int, int)>
+                    {
+                        (antenna.Item1 + euclideanDistance.Item1 * x, antenna.Item2 + euclideanDistance.Item2 * x),
+                        (adjacentAntenna.Item1 - euclideanDistance.Item1 * x, adjacentAntenna.Item2 - euclideanDistance.Item2 * x)
+                    })
+                    .Where(x => ArrayHelper.IsValidCoordinate(x.Item1, x.Item2, _input));
+
+                    foreach (var antinode in validAntinodes)
+                        antinodes.Add(antinode); 
+                }
+                
+                antennaIndex++;
+            }
+        }
+        
+        return new(antinodes.Count.ToString());
     }
 }
