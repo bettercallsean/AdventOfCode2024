@@ -10,26 +10,26 @@ public class Day08 : BaseDay
     public Day08()
     {
         _input = File.ReadAllLines(InputFilePath).Select(x => x.ToCharArray()).ToArray();
-        _antennaTypes = new Dictionary<char, List<(int, int)>>();
-        
+        _antennaTypes = [];
+
         for (var i = 0; i < _input.Length; i++)
         {
             for (var j = 0; j < _input[0].Length; j++)
             {
-                if(_input[i][j] == '.') continue;
-                
-                if(_antennaTypes.TryGetValue(_input[i][j], out var value))
+                if (_input[i][j] == '.') continue;
+
+                if (_antennaTypes.TryGetValue(_input[i][j], out var value))
                     value.Add((i, j));
                 else
                     _antennaTypes.Add(_input[i][j], [(i, j)]);
             }
         }
     }
-    
+
     public override ValueTask<string> Solve_1()
     {
         var antinodes = new HashSet<(int, int)>();
-        
+
         foreach (var antennaType in _antennaTypes)
         {
             var antennaIndex = 0;
@@ -39,24 +39,24 @@ public class Day08 : BaseDay
                 for (var i = antennaIndex + 1; i < antennaType.Value.Count; i++)
                 {
                     var adjacentAntenna = antennaType.Value[i];
-                    
+
                     var validAntinodes = GetValidAntinodeLocations(1, 1, antenna, adjacentAntenna);
 
                     foreach (var antinode in validAntinodes)
-                        antinodes.Add(antinode); 
+                        antinodes.Add(antinode);
                 }
-                
+
                 antennaIndex++;
             }
         }
-        
+
         return new(antinodes.Count.ToString());
     }
 
     public override ValueTask<string> Solve_2()
     {
         var antinodes = new HashSet<(int, int)>();
-        
+
         foreach (var antennaType in _antennaTypes)
         {
             var antennaIndex = 0;
@@ -70,13 +70,13 @@ public class Day08 : BaseDay
                     var validAntinodes = GetValidAntinodeLocations(0, _input.Length, antenna, adjacentAntenna);
 
                     foreach (var antinode in validAntinodes)
-                        antinodes.Add(antinode); 
+                        antinodes.Add(antinode);
                 }
-                
+
                 antennaIndex++;
             }
         }
-        
+
         return new(antinodes.Count.ToString());
     }
 
