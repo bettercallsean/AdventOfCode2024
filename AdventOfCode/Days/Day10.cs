@@ -31,7 +31,7 @@ public class Day10 : BaseDay
     {
         var trailCount = 0;
 
-        foreach (var validPaths in _startPoints.Select(start => GetValidPaths(start, [], [])))
+        foreach (var validPaths in _startPoints.Select(start => GetValidPaths(start, [])))
         {
             _endPoints.AddRange(validPaths);
             trailCount += validPaths.Distinct().Count();
@@ -45,20 +45,17 @@ public class Day10 : BaseDay
         return new(_endPoints.Count.ToString());
     }
     
-    private List<(int, int)> GetValidPaths((int, int) start, List<(int, int)> path, List<(int, int)> validPaths)
+    private List<(int, int)> GetValidPaths((int, int) start, List<(int, int)> validPaths)
     {
-        path = path.ToList();
-        path.Add(start);
-        
         var surroundingPaths = ArrayHelper.GetSurroundingCompassValues(start.Item1, start.Item2, _input);
-        foreach (var surroundingValue in surroundingPaths.Where(x => !path.Contains(x)))
+        foreach (var surroundingValue in surroundingPaths)
         {
             if (_input[surroundingValue.Item1][surroundingValue.Item2] - _input[start.Item1][start.Item2] is not 1) continue;
 
             if (_input[surroundingValue.Item1][surroundingValue.Item2] == 9 && _input[start.Item1][start.Item2] != 9)
                 validPaths.Add(surroundingValue);
             else
-                validPaths = GetValidPaths(surroundingValue, path, validPaths);
+                validPaths = GetValidPaths(surroundingValue, validPaths);
         }
         
         return validPaths;
