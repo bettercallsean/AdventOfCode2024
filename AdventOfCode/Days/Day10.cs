@@ -45,9 +45,9 @@ public class Day10 : BaseDay
         return new(_endPoints.Count.ToString());
     }
     
-    private List<(int, int)> GetValidPaths((int, int) start, HashSet<(int, int)> path, List<(int, int)> validPaths)
+    private List<(int, int)> GetValidPaths((int, int) start, List<(int, int)> path, List<(int, int)> validPaths)
     {
-        path = path.ToHashSet();
+        path = path.ToList();
         path.Add(start);
         
         var surroundingPaths = ArrayHelper.GetSurroundingCompassValues(start.Item1, start.Item2, _input);
