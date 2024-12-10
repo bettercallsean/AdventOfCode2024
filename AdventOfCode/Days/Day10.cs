@@ -6,14 +6,17 @@ public class Day10 : BaseDay
 {
     private readonly int[][] _input;
     private readonly List<(int, int)> _startPoints;
+    private readonly List<(int, int)> _endPoints;
 
     public Day10()
     {
         _input = File.ReadAllLines(InputFilePath)
-            .Select(x => x.ToCharArray().Select(x => x - 48).ToArray())
+            .Select(x => x.ToCharArray().Select(y => y - 48).ToArray())
             .ToArray();
         
         _startPoints = [];
+        _endPoints = [];
+        
         for (var i = 0; i < _input.Length; i++)
         {
             for (var j = 0; j < _input[0].Length; j++)
@@ -26,21 +29,25 @@ public class Day10 : BaseDay
     
     public override ValueTask<string> Solve_1()
     {
-        var trailCount = _startPoints.Sum(start => GetValidPaths(start, [], []).Distinct().Count());
+        var trailCount = 0;
+
+        foreach (var validPaths in _startPoints.Select(start => GetValidPaths(start, [], [])))
+        {
+            _endPoints.AddRange(validPaths);
+            trailCount += validPaths.Distinct().Count();
+        }
         
         return new(trailCount.ToString());
     }
 
     public override ValueTask<string> Solve_2()
     {
-        var trailCount = _startPoints.Sum(startPoint => GetValidPaths(startPoint, [], []).Count);
-
-        return new(trailCount.ToString());
+        return new(_endPoints.Count.ToString());
     }
     
     private List<(int, int)> GetValidPaths((int, int) start, HashSet<(int, int)> path, List<(int, int)> validPaths)
     {
-        path = path.Select(x => x).ToHashSet();
+        path = path.ToHashSet();
         path.Add(start);
         
         var surroundingPaths = ArrayHelper.GetSurroundingCompassValues(start.Item1, start.Item2, _input);
