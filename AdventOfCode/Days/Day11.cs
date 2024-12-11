@@ -33,23 +33,23 @@ public class Day11 : BaseDay
         for (var i = 0; i < iteration; i++)
         {
             var modifications = new Dictionary<long, long> { { 1, 0 } };
-            foreach (var stone in stones.Where(stone => stone.Value != 0))
+            foreach (var stone in stones)
             {
                 if (stone.Key == 0)
-                    AddModifiedValue(1, stone.Value, modifications);
+                    AddStoneToModifiedList(1, stone.Value, modifications);
                 else if (stone.Key.ToString().Length % 2 == 0)
                 {
                     var stoneString = stone.Key.ToString();
                     var leftStone = int.Parse(stoneString[..(stoneString.Length / 2)]);
                     var rightStone = int.Parse(stoneString[(stoneString.Length / 2)..]);
 
-                    AddModifiedValue(leftStone, stone.Value, modifications);
-                    AddModifiedValue(rightStone, stone.Value, modifications);
+                    AddStoneToModifiedList(leftStone, stone.Value, modifications);
+                    AddStoneToModifiedList(rightStone, stone.Value, modifications);
                 }
                 else
-                    AddModifiedValue(stone.Key * 2024, stone.Value, modifications);
+                    AddStoneToModifiedList(stone.Key * 2024, stone.Value, modifications);
 
-                stones[stone.Key] = 0;
+                stones.Remove(stone.Key);
             }
 
             foreach (var modification in modifications)
@@ -61,7 +61,7 @@ public class Day11 : BaseDay
         return stones.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
     }
 
-    private static void AddModifiedValue(long key, long value, Dictionary<long, long> modifications)
+    private static void AddStoneToModifiedList(long key, long value, Dictionary<long, long> modifications)
     {
         if (!modifications.TryAdd(key, value))
             modifications[key] += value;
