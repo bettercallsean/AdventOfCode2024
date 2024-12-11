@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace AdventOfCode.Days;
+﻿namespace AdventOfCode.Days;
 
 public class Day11 : BaseDay
 {
