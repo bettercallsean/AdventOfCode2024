@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Days;
+﻿using System.Text.Json;
+
+namespace AdventOfCode.Days;
 
 public class Day11 : BaseDay
 {
@@ -22,7 +24,7 @@ public class Day11 : BaseDay
 
         return new(stones.Values.Sum().ToString());
     }
-    
+
     private Dictionary<long, long> GetStonesAfterIteration(int iteration)
     {
         var stones = _input.ToDictionary(x => x, x => _input.LongCount(y => y == x));
@@ -34,18 +36,18 @@ public class Day11 : BaseDay
             foreach (var stone in stones.Where(stone => stone.Value != 0))
             {
                 if (stone.Key == 0)
-                    modifications[1] = modifications.TryGetValue(1, out var value) ? value + stone.Value : stone.Value;
+                    AddModifiedValue(1, stone.Value, modifications);
                 else if (stone.Key.ToString().Length % 2 == 0)
                 {
                     var stoneString = stone.Key.ToString();
                     var leftStone = int.Parse(stoneString[..(stoneString.Length / 2)]);
                     var rightStone = int.Parse(stoneString[(stoneString.Length / 2)..]);
 
-                    modifications[leftStone] = modifications.TryGetValue(leftStone, out var value) ? value + stone.Value : stone.Value;
-                    modifications[rightStone] = modifications.TryGetValue(rightStone, out value) ? value + stone.Value : stone.Value;
+                    AddModifiedValue(leftStone, stone.Value, modifications);
+                    AddModifiedValue(rightStone, stone.Value, modifications);
                 }
                 else
-                    modifications[stone.Key * 2024] = modifications.TryGetValue(stone.Key * 2024, out var value) ? value + stone.Value : stone.Value;
+                    AddModifiedValue(stone.Key * 2024, stone.Value, modifications);
 
                 stones[stone.Key] = 0;
             }
@@ -57,5 +59,11 @@ public class Day11 : BaseDay
         }
 
         return stones.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
+    }
+
+    private static void AddModifiedValue(long key, long value, Dictionary<long, long> modifications)
+    {
+        if (!modifications.TryAdd(key, value))
+            modifications[key] += value;
     }
 }
