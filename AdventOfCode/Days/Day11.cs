@@ -11,46 +11,24 @@ public class Day11 : BaseDay
 
     public override ValueTask<string> Solve_1()
     {
-        var stones = _input.ToDictionary(x => x, x => _input.LongCount(y => y == x));
-        stones.TryAdd(1, 0);
-
-        for (var i = 0; i < 25; i++)
-        {
-            var modifications = new Dictionary<long, long> { { 1, 0 } };
-            foreach (var stone in stones.Where(stone => stone.Value != 0))
-            {
-                if (stone.Key == 0)
-                    modifications[1] = modifications.TryGetValue(1, out var value) ? value + stone.Value : stone.Value;
-                else if (stone.Key.ToString().Length % 2 == 0)
-                {
-                    var stoneString = stone.Key.ToString();
-                    var leftStone = int.Parse(stoneString[..(stoneString.Length / 2)]);
-                    var rightStone = int.Parse(stoneString[(stoneString.Length / 2)..]);
-
-                    modifications[leftStone] = modifications.TryGetValue(leftStone, out var value) ? value + stone.Value : stone.Value;
-                    modifications[rightStone] = modifications.TryGetValue(rightStone, out value) ? value + stone.Value : stone.Value;
-                }
-                else
-                    modifications[stone.Key * 2024] = modifications.TryGetValue(stone.Key * 2024, out var value) ? value + stone.Value : stone.Value;
-
-                stones[stone.Key] = 0;
-            }
-
-            foreach (var modification in modifications)
-                stones[modification.Key] = modification.Value;
-
-            modifications.Clear();
-        }
+        var stones = GetStonesAfterIteration(25);
 
         return new(stones.Values.Sum().ToString());
     }
 
     public override ValueTask<string> Solve_2()
     {
+        var stones = GetStonesAfterIteration(75);
+
+        return new(stones.Values.Sum().ToString());
+    }
+    
+    private Dictionary<long, long> GetStonesAfterIteration(int iteration)
+    {
         var stones = _input.ToDictionary(x => x, x => _input.LongCount(y => y == x));
         stones.TryAdd(1, 0);
 
-        for (var i = 0; i < 75; i++)
+        for (var i = 0; i < iteration; i++)
         {
             var modifications = new Dictionary<long, long> { { 1, 0 } };
             foreach (var stone in stones.Where(stone => stone.Value != 0))
@@ -78,6 +56,6 @@ public class Day11 : BaseDay
             modifications.Clear();
         }
 
-        return new(stones.Values.Sum().ToString());
+        return stones.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
     }
 }
