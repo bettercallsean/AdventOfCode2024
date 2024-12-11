@@ -52,8 +52,6 @@ public class Day11 : BaseDay
 
             foreach (var modification in modifications)
                 stones[modification.Key] = modification.Value;
-
-            modifications.Clear();
         }
 
         return stones.Where(x => x.Value > 0).ToDictionary(x => x.Key, x => x.Value);
