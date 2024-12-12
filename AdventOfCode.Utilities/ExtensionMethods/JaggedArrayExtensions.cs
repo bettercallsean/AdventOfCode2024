@@ -46,7 +46,7 @@ public static class JaggedArrayExtensions
 
         Console.WriteLine();
     }
-    
+
     public static bool ArraysAreTheSame<T>(this T[][] arr1, T[][] arr2) where T : IComparable<T>
     {
         var row = arr1.Length;
@@ -79,6 +79,16 @@ public static class JaggedArrayExtensions
         var surroundingCoordinates = new List<(int X, int Y)>
         {
             (x - 1, y), (x, y - 1), (x , y + 1), (x + 1, y)
+        };
+
+        return surroundingCoordinates.Where(coordinate => array.IsValidCoordinate(coordinate.X, coordinate.Y)).Select(coordinate => (coordinate.X, coordinate.Y));
+    }
+
+    public static IEnumerable<(int, int)> GetSurroundingCompassValues<T>(this T[][] array, (int x, int y) coordinates)
+    {
+        var surroundingCoordinates = new List<(int X, int Y)>
+        {
+            (coordinates.x - 1, coordinates.y), (coordinates.x, coordinates.y - 1), (coordinates.x , coordinates.y + 1), (coordinates.x + 1, coordinates.y)
         };
 
         return surroundingCoordinates.Where(coordinate => array.IsValidCoordinate(coordinate.X, coordinate.Y)).Select(coordinate => (coordinate.X, coordinate.Y));
