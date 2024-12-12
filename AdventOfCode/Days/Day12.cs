@@ -100,45 +100,12 @@ public class Day12 : BaseDay
     private static int GetSidesCount(HashSet<(int, int)> region)
     {
         var sides = 0;
-        var topHorizontal = new HashSet<(int, int)>();
-        var bottomHorizontal = new HashSet<(int, int)>();
-        var leftVertical = new HashSet<(int, int)>();
-        var rightVertical = new HashSet<(int, int)>();
-
         var horizontalSides = region.OrderBy(x => x.Item2).GroupBy(x => x.Item1);
 
         foreach (var horizontalSide in horizontalSides)
         {
             var side = horizontalSide.ToList();
-            for (var i = 0; i < side.Count; i++)
-            {
-                var regionArea = side[i];
-                var length = 0;
-                var horizontalIndex = regionArea.Item2;
-
-                while (!region.Contains((regionArea.Item1 - 1, horizontalIndex)) && side.Contains((regionArea.Item1, horizontalIndex)) && !topHorizontal.Contains((regionArea.Item1, horizontalIndex)))
-                {
-                    topHorizontal.Add((regionArea.Item1, horizontalIndex));
-                    horizontalIndex++;
-                    length++;
-                }
-
-                if (length > 0)
-                    sides++;
-
-                length = 0;
-                horizontalIndex = regionArea.Item2;
-
-                while (!region.Contains((regionArea.Item1 + 1, horizontalIndex)) && side.Contains((regionArea.Item1, horizontalIndex)) && !bottomHorizontal.Contains((regionArea.Item1, horizontalIndex)))
-                {
-                    bottomHorizontal.Add((regionArea.Item1, horizontalIndex));
-                    horizontalIndex++;
-                    length++;
-                }
-
-                if (length > 0)
-                    sides++;
-            }
+            sides += GetHorizontalSidesCount(side, region);
         }
 
         var verticalSides = region.OrderBy(x => x.Item1).GroupBy(x => x.Item2);
@@ -146,35 +113,84 @@ public class Day12 : BaseDay
         foreach (var verticalSide in verticalSides)
         {
             var side = verticalSide.ToList();
-            for (var i = 0; i < side.Count; i++)
+            sides += GetVerticalSidesCount(side, region);
+        }
+
+        return sides;
+    }
+    private static int GetHorizontalSidesCount(List<(int, int)> side, HashSet<(int, int)> region)
+    {
+        var sides = 0;
+        var topHorizontal = new HashSet<(int, int)>();
+        var bottomHorizontal = new HashSet<(int, int)>();
+
+        for (var i = 0; i < side.Count; i++)
+        {
+            var regionArea = side[i];
+            var length = 0;
+            var horizontalIndex = regionArea.Item2;
+
+            while (!region.Contains((regionArea.Item1 - 1, horizontalIndex)) && side.Contains((regionArea.Item1, horizontalIndex)) && !topHorizontal.Contains((regionArea.Item1, horizontalIndex)))
             {
-                var regionArea = side[i];
-                var length = 0;
-                var verticalIndex = regionArea.Item1;
-
-                while (!region.Contains((verticalIndex, regionArea.Item2 - 1)) && side.Contains((verticalIndex, regionArea.Item2)) && !leftVertical.Contains((verticalIndex, regionArea.Item2)))
-                {
-                    leftVertical.Add((verticalIndex, regionArea.Item2));
-                    verticalIndex++;
-                    length++;
-                }
-
-                if (length > 0)
-                    sides++;
-
-                length = 0;
-                verticalIndex = regionArea.Item1;
-
-                while (!region.Contains((verticalIndex, regionArea.Item2 + 1)) && side.Contains((verticalIndex, regionArea.Item2)) && !rightVertical.Contains((verticalIndex, regionArea.Item2)))
-                {
-                    rightVertical.Add((verticalIndex, regionArea.Item2));
-                    verticalIndex++;
-                    length++;
-                }
-
-                if (length > 0)
-                    sides++;
+                topHorizontal.Add((regionArea.Item1, horizontalIndex));
+                horizontalIndex++;
+                length++;
             }
+
+            if (length > 0)
+                sides++;
+
+            length = 0;
+            horizontalIndex = regionArea.Item2;
+
+            while (!region.Contains((regionArea.Item1 + 1, horizontalIndex)) && side.Contains((regionArea.Item1, horizontalIndex)) && !bottomHorizontal.Contains((regionArea.Item1, horizontalIndex)))
+            {
+                bottomHorizontal.Add((regionArea.Item1, horizontalIndex));
+                horizontalIndex++;
+                length++;
+            }
+
+            if (length > 0)
+                sides++;
+        }
+
+        return sides;
+    }
+
+    private static int GetVerticalSidesCount(List<(int, int)> side, HashSet<(int, int)> region)
+    {
+        var sides = 0;
+        var leftVertical = new HashSet<(int, int)>();
+        var rightVertical = new HashSet<(int, int)>();
+
+        for (var i = 0; i < side.Count; i++)
+        {
+            var regionArea = side[i];
+            var length = 0;
+            var verticalIndex = regionArea.Item1;
+
+            while (!region.Contains((verticalIndex, regionArea.Item2 - 1)) && side.Contains((verticalIndex, regionArea.Item2)) && !leftVertical.Contains((verticalIndex, regionArea.Item2)))
+            {
+                leftVertical.Add((verticalIndex, regionArea.Item2));
+                verticalIndex++;
+                length++;
+            }
+
+            if (length > 0)
+                sides++;
+
+            length = 0;
+            verticalIndex = regionArea.Item1;
+
+            while (!region.Contains((verticalIndex, regionArea.Item2 + 1)) && side.Contains((verticalIndex, regionArea.Item2)) && !rightVertical.Contains((verticalIndex, regionArea.Item2)))
+            {
+                rightVertical.Add((verticalIndex, regionArea.Item2));
+                verticalIndex++;
+                length++;
+            }
+
+            if (length > 0)
+                sides++;
         }
 
         return sides;
