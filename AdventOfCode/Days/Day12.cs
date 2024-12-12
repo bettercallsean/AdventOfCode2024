@@ -97,14 +97,13 @@ public class Day12 : BaseDay
         return perimeter;
     }
 
-    private int GetSidesCount(HashSet<(int, int)> region)
+    private static int GetSidesCount(HashSet<(int, int)> region)
     {
         var sides = 0;
         var topHorizontal = new HashSet<(int, int)>();
         var bottomHorizontal = new HashSet<(int, int)>();
         var leftVertical = new HashSet<(int, int)>();
         var rightVertical = new HashSet<(int, int)>();
-        var vertical = new HashSet<(int, int)>();
 
         var horizontalSides = region.OrderBy(x => x.Item2).GroupBy(x => x.Item1);
 
@@ -114,28 +113,30 @@ public class Day12 : BaseDay
             for (var i = 0; i < side.Count; i++)
             {
                 var regionArea = side[i];
-                var topLength = 0;
-                var foo = regionArea.Item2;
-                while (!region.Contains((regionArea.Item1 - 1, foo)) && side.Contains((regionArea.Item1, foo)) && !topHorizontal.Contains((regionArea.Item1, foo)))
+                var length = 0;
+                var horizontalIndex = regionArea.Item2;
+
+                while (!region.Contains((regionArea.Item1 - 1, horizontalIndex)) && side.Contains((regionArea.Item1, horizontalIndex)) && !topHorizontal.Contains((regionArea.Item1, horizontalIndex)))
                 {
-                    topHorizontal.Add((regionArea.Item1, foo));
-                    foo++;
-                    topLength++;
+                    topHorizontal.Add((regionArea.Item1, horizontalIndex));
+                    horizontalIndex++;
+                    length++;
                 }
 
-                if (topLength > 0)
+                if (length > 0)
                     sides++;
 
-                var bottomLength = 0;
-                foo = regionArea.Item2;
-                while (!region.Contains((regionArea.Item1 + 1, foo)) && side.Contains((regionArea.Item1, foo)) && !bottomHorizontal.Contains((regionArea.Item1, foo)))
+                length = 0;
+                horizontalIndex = regionArea.Item2;
+
+                while (!region.Contains((regionArea.Item1 + 1, horizontalIndex)) && side.Contains((regionArea.Item1, horizontalIndex)) && !bottomHorizontal.Contains((regionArea.Item1, horizontalIndex)))
                 {
-                    bottomHorizontal.Add((regionArea.Item1, foo));
-                    foo++;
-                    bottomLength++;
+                    bottomHorizontal.Add((regionArea.Item1, horizontalIndex));
+                    horizontalIndex++;
+                    length++;
                 }
 
-                if (bottomLength > 0)
+                if (length > 0)
                     sides++;
             }
         }
@@ -144,33 +145,34 @@ public class Day12 : BaseDay
 
         foreach (var verticalSide in verticalSides)
         {
-            var sideLength = 0;
             var side = verticalSide.ToList();
             for (var i = 0; i < side.Count; i++)
             {
                 var regionArea = side[i];
-                var topLength = 0;
-                var foo = regionArea.Item1;
-                while (!region.Contains((foo, regionArea.Item2 - 1)) && side.Contains((foo, regionArea.Item2)) && !leftVertical.Contains((foo, regionArea.Item2)))
+                var length = 0;
+                var verticalIndex = regionArea.Item1;
+
+                while (!region.Contains((verticalIndex, regionArea.Item2 - 1)) && side.Contains((verticalIndex, regionArea.Item2)) && !leftVertical.Contains((verticalIndex, regionArea.Item2)))
                 {
-                    leftVertical.Add((foo, regionArea.Item2));
-                    foo++;
-                    topLength++;
+                    leftVertical.Add((verticalIndex, regionArea.Item2));
+                    verticalIndex++;
+                    length++;
                 }
 
-                if (topLength > 0)
+                if (length > 0)
                     sides++;
 
-                var bottomLength = 0;
-                foo = regionArea.Item1;
-                while (!region.Contains((foo, regionArea.Item2 + 1)) && side.Contains((foo, regionArea.Item2)) && !rightVertical.Contains((foo, regionArea.Item2)))
+                length = 0;
+                verticalIndex = regionArea.Item1;
+
+                while (!region.Contains((verticalIndex, regionArea.Item2 + 1)) && side.Contains((verticalIndex, regionArea.Item2)) && !rightVertical.Contains((verticalIndex, regionArea.Item2)))
                 {
-                    rightVertical.Add((foo, regionArea.Item2));
-                    foo++;
-                    bottomLength++;
+                    rightVertical.Add((verticalIndex, regionArea.Item2));
+                    verticalIndex++;
+                    length++;
                 }
 
-                if (bottomLength > 0)
+                if (length > 0)
                     sides++;
             }
         }
