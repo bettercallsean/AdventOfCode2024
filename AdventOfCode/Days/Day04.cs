@@ -1,6 +1,4 @@
-﻿using AdventOfCode.Utilities.Helpers;
-
-namespace AdventOfCode.Days;
+﻿namespace AdventOfCode.Days;
 public class Day04 : BaseDay
 {
     private readonly char[][] _input;
@@ -23,29 +21,29 @@ public class Day04 : BaseDay
                 if (line[x] != 'X') continue;
                 
                 // Right
-                if (ArrayHelper.IsValidCoordinate(x + 3, line) && new string(line[x..(x + 4)]) == "XMAS")
+                if (line.IsValidCoordinate(x + 3) && new string(line[x..(x + 4)]) == "XMAS")
                     count++;
 
                 // Left
-                if (ArrayHelper.IsValidCoordinate(x - 3, line) && new string(line[(x - 3)..(x + 1)]) == "SAMX")
+                if (line.IsValidCoordinate(x - 3) && new string(line[(x - 3)..(x + 1)]) == "SAMX")
                     count++;
 
                 // Up
-                if (ArrayHelper.IsValidCoordinate(x, y - 3, _input) && new string(ArrayHelper.GetVerticalSlice(x, y, y - 3, _input)) == "XMAS")
+                if (_input.IsValidCoordinate(x, y - 3) && new string(_input.GetVerticalSlice(x, y, y - 3)) == "XMAS")
                     count++;
 
                 // Down
-                if (ArrayHelper.IsValidCoordinate(x, y + 3, _input) && new string(ArrayHelper.GetVerticalSlice(x, y, y + 3, _input)) == "XMAS")
+                if (_input.IsValidCoordinate(x, y + 3) && new string(_input.GetVerticalSlice(x, y, y + 3)) == "XMAS")
                     count++;
 
                 for (var i = -3; i <= 3; i += 6)
                 {
                     // Top Left && Bottom Right
-                    if (ArrayHelper.IsValidCoordinate(x + i, y + i, _input) && new string(ArrayHelper.GetDiagonalSlice(x, y, x + i, y + i, _input)) == "XMAS")
+                    if (_input.IsValidCoordinate(x + i, y + i) && new string(_input.GetDiagonalSlice(x, y, x + i, y + i)) == "XMAS")
                         count++;
 
                     // Top Right && Bottom Left
-                    if (ArrayHelper.IsValidCoordinate(x + i, (y + i * -1), _input) && new string(ArrayHelper.GetDiagonalSlice(x, y, x + i, y + i * -1, _input)) == "XMAS")
+                    if (_input.IsValidCoordinate(x + i, y + i * -1) && new string(_input.GetDiagonalSlice(x, y, x + i, y + i * -1)) == "XMAS")
                         count++;
                 }
             }
@@ -66,7 +64,7 @@ public class Day04 : BaseDay
             {
                 if (line[x] != 'A') continue;
                 
-                var surroundingCharacterCoordinates = ArrayHelper.GetSurroundingDiagonalValues(x, y, _input).ToList();
+                var surroundingCharacterCoordinates = _input.GetSurroundingDiagonalValues(x, y).ToList();
 
                 if (surroundingCharacterCoordinates.Count != 4)
                     continue;
@@ -76,7 +74,7 @@ public class Day04 : BaseDay
                     {
                         var xDirection = x - coordinate.Item1;
                         var yDirection = y - coordinate.Item2;
-                        return ArrayHelper.GetDiagonalSlice(coordinate.Item1, coordinate.Item2, coordinate.Item1 + xDirection * 2, coordinate.Item2 + yDirection * 2, _input);
+                        return _input.GetDiagonalSlice(coordinate.Item1, coordinate.Item2, coordinate.Item1 + xDirection * 2, coordinate.Item2 + yDirection * 2);
                     })
                     .Count(diagonalSlice => new string(diagonalSlice) == "MAS" || new string(diagonalSlice) == "SAM");
 

@@ -1,5 +1,3 @@
-using AdventOfCode.Utilities.Helpers;
-
 namespace AdventOfCode.Days;
 
 public class Day08 : BaseDay
@@ -90,7 +88,7 @@ public class Day08 : BaseDay
                 (antenna1.Item1 + distance.Item1 * x, antenna1.Item2 + distance.Item2 * x),
                 (antenna2.Item1 - distance.Item1 * x, antenna2.Item2 - distance.Item2 * x)
             })
-            .Where(x => ArrayHelper.IsValidCoordinate(x.Item1, x.Item2, _input))
+            .Where(x => _input.IsValidCoordinate(x.Item1, x.Item2))
             .ToList();
     }
 }

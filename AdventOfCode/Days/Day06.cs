@@ -1,5 +1,3 @@
-using AdventOfCode.Utilities.Helpers;
-
 namespace AdventOfCode.Days;
 
 public class Day06 : BaseDay
@@ -112,8 +110,7 @@ public class Day06 : BaseDay
 
     private bool IsValidPosition(int iDirection, int jDirection)
     {
-        if (!ArrayHelper.IsValidCoordinate(_currentPosition.Item1 + iDirection, _currentPosition.Item2 + jDirection,
-                _input)) return false;
+        if (!_input.IsValidCoordinate(_currentPosition.Item1 + iDirection, _currentPosition.Item2 + jDirection)) return false;
         
         _currentPosition.Item1 += iDirection;
         _currentPosition.Item2 += jDirection;

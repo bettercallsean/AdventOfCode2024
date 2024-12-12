@@ -1,9 +1,7 @@
-﻿using AdventOfCode.Utilities.Helpers;
-
-namespace AdventOfCode2024.Utilities.Tests;
+﻿namespace AdventOfCode2024.Utilities.Tests.Extensions;
 
 [TestClass]
-public sealed class ArrayHelperTests
+public sealed class JaggedArrayExtensionsTests
 {
     [TestMethod]
     [DataRow(0, 0)]
@@ -13,9 +11,9 @@ public sealed class ArrayHelperTests
     {
         // Arrange
         var array = new int[][] { [1, 2, 3], [4, 5, 6], [7, 8, 9] };
-
+        
         // Assert
-        Assert.IsTrue(ArrayHelper.IsValidCoordinate(x, y, array));
+        Assert.IsTrue(array.IsValidCoordinate(x, y));
     }
 
     [TestMethod]
@@ -28,32 +26,7 @@ public sealed class ArrayHelperTests
         var array = new int[][] { [1, 2, 3], [4, 5, 6], [7, 8, 9] };
 
         // Assert
-        Assert.IsFalse(ArrayHelper.IsValidCoordinate(-1, 1, array));
-    }
-
-    [TestMethod]
-    [DataRow(0)]
-    [DataRow(1)]
-    [DataRow(2)]
-    public void IsValidCoordinate1DArray_WhenPassedValidCoordinate_ReturnsTrue(int x)
-    {
-        // Arrange
-        var array = new[] { 1, 2, 3 };
-
-        // Assert
-        Assert.IsTrue(ArrayHelper.IsValidCoordinate(x, array));
-    }
-
-    [TestMethod]
-    [DataRow(-1)]
-    [DataRow(4)]
-    public void IsValidCoordinate1DArray_WhenPassedInvalidCoordinate_ReturnsFalse(int x)
-    {
-        // Arrange
-        var array = new[] { 1, 2, 3 };
-
-        // Assert
-        Assert.IsFalse(ArrayHelper.IsValidCoordinate(x, array));
+        Assert.IsFalse(array.IsValidCoordinate(-1, 1));
     }
     
     [TestMethod]
@@ -66,7 +39,7 @@ public sealed class ArrayHelperTests
         var array = new int[][] { [1, 2, 3], [4, 5, 6], [7, 8, 9] };
 
         // Act
-        var slice = ArrayHelper.GetVerticalSlice(x, 0, 2, array);
+        var slice = array.GetVerticalSlice(x, 0, 2);
         
         // Assert
         CollectionAssert.AreEqual(expectedArray, slice);

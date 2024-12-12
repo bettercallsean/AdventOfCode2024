@@ -1,5 +1,3 @@
-using AdventOfCode.Utilities.Helpers;
-
 namespace AdventOfCode.Days;
 
 public class Day10 : BaseDay
@@ -47,7 +45,7 @@ public class Day10 : BaseDay
     
     private List<(int, int)> GetValidPaths((int, int) start, List<(int, int)> validPaths)
     {
-        var surroundingPaths = ArrayHelper.GetSurroundingCompassValues(start.Item1, start.Item2, _input);
+        var surroundingPaths = _input.GetSurroundingCompassValues(start.Item1, start.Item2);
         foreach (var surroundingValue in surroundingPaths)
         {
             if (_input[surroundingValue.Item1][surroundingValue.Item2] - _input[start.Item1][start.Item2] is not 1) continue;

@@ -1,5 +1,3 @@
-using AdventOfCode.Utilities.ExtensionMethods;
-
 namespace AdventOfCode.Days;
 
 public class Day07 : BaseDay
