@@ -31,11 +31,11 @@ public class Day13 : BaseDay
         foreach (var grabber in _input)
         {
             var presses = GetMinNumberOfButtonPresses(grabber.Prize, grabber.ButtonA, grabber.ButtonB);
-
+            
             if (presses.Item1 * grabber.ButtonA.X + presses.Item2 * grabber.ButtonB.X != grabber.Prize.X
                 || presses.Item1 * grabber.ButtonA.Y + presses.Item2 * grabber.ButtonB.Y != grabber.Prize.Y)
                 continue;
-
+            
             total += presses.Item1 * 3 + presses.Item2;
         }
 
@@ -49,11 +49,11 @@ public class Day13 : BaseDay
         foreach (var grabber in _input)
         {
             var presses = GetMinNumberOfButtonPresses((grabber.Prize.X + 10000000000000, grabber.Prize.Y + 10000000000000), grabber.ButtonA, grabber.ButtonB);
-
+            
             if (presses.Item1 * grabber.ButtonA.X + presses.Item2 * grabber.ButtonB.X != grabber.Prize.X + 10000000000000
                 || presses.Item1 * grabber.ButtonA.Y + presses.Item2 * grabber.ButtonB.Y != grabber.Prize.Y + 10000000000000)
                 continue;
-
+            
             total += presses.Item1 * 3 + presses.Item2;
         }
 
@@ -62,12 +62,28 @@ public class Day13 : BaseDay
 
     private static (long, long) GetMinNumberOfButtonPresses((long X, long Y) prize, (int X, int Y) buttonA, (int X, int Y) buttonB)
     {
-        var presses = (0L, 0L);
+        var presses = new double[2];
+        
+        var prizeMatrix = new[]
+        {
+            prize.X, prize.Y
+        };
+        
+        var determinant = (double)buttonA.X * buttonB.Y-buttonA.Y * buttonB.X;
+        
+        var inverse = new double[][]
+        {
+            [buttonB.Y / determinant, buttonA.Y * -1 / determinant],
+            [buttonB.X * -1 / determinant, buttonA.X / determinant]
+        };
 
-        presses.Item1 = (prize.X * buttonB.Y - prize.Y * buttonB.X) / (buttonA.X * buttonB.Y - buttonA.Y * buttonB.X);
-        presses.Item2 = (buttonA.X * prize.Y - buttonA.Y * prize.X) / (buttonA.X * buttonB.Y - buttonA.Y * buttonB.X);
+        for (var i = 0; i < prizeMatrix.Length; i++)
+        {
+            presses[0] += prizeMatrix[i] * inverse[i][0];
+            presses[1] += prizeMatrix[i] * inverse[i][1];
+        }
 
-        return presses;
+        return ((long)Math.Round(presses[0]), (long)Math.Round(presses[1]));
     }
 }
 
