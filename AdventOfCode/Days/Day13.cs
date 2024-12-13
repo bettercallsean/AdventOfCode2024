@@ -44,14 +44,15 @@ public class Day13 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
+        const long LocationIncrease = 10000000000000;
         var total = 0L;
 
         foreach (var grabber in _input)
         {
-            var presses = GetMinNumberOfButtonPresses((grabber.Prize.X + 10000000000000, grabber.Prize.Y + 10000000000000), grabber.ButtonA, grabber.ButtonB);
+            var presses = GetMinNumberOfButtonPresses((grabber.Prize.X + LocationIncrease, grabber.Prize.Y + LocationIncrease), grabber.ButtonA, grabber.ButtonB);
             
-            if (presses.Item1 * grabber.ButtonA.X + presses.Item2 * grabber.ButtonB.X != grabber.Prize.X + 10000000000000
-                || presses.Item1 * grabber.ButtonA.Y + presses.Item2 * grabber.ButtonB.Y != grabber.Prize.Y + 10000000000000)
+            if (presses.Item1 * grabber.ButtonA.X + presses.Item2 * grabber.ButtonB.X != grabber.Prize.X + LocationIncrease
+                || presses.Item1 * grabber.ButtonA.Y + presses.Item2 * grabber.ButtonB.Y != grabber.Prize.Y + LocationIncrease)
                 continue;
             
             total += presses.Item1 * 3 + presses.Item2;
