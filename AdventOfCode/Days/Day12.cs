@@ -42,7 +42,7 @@ public class Day12 : BaseDay
                 var perimeter = GetPerimeter((i, j), regionArea, 0);
                 areasExplored.AddRange(regionArea);
 
-                _regions.AddRange(regionArea);
+                _regions.Add(regionArea);
 
                 totalFencingPrice += perimeter * regionArea.Count;
             }
