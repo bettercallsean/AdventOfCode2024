@@ -101,4 +101,46 @@ public class Day15 : BaseDay
         };
     }
 
+    private void GenerateNewMap()
+    {
+        var input = File.ReadAllText(InputFilePath).Split($"{Environment.NewLine}{Environment.NewLine}").ToList();
+        var oldMap = input[0].Split(Environment.NewLine).Select(x => x.ToCharArray()).ToArray();
+        var newMap = new char[_input.Length][];
+
+        for (var i = 0; i < oldMap.Length; i++)
+        {
+            var level = oldMap[i];
+            newMap[i] = new char[oldMap[0].Length * 2];
+            var offset = 0;
+            for (var j = 0; j < level.Length; j++)
+            {
+                if (level[j] == '#')
+                {
+                    newMap[i][j + offset] = '#';
+                    newMap[i][j + offset + 1] = '#';
+                }
+                else if (level[j] == 'O')
+                {
+                    newMap[i][j + offset] = '[';
+                    newMap[i][j + offset + 1] = ']';
+                }
+                else if (level[j] == '@')
+                {
+                    newMap[i][j + offset] = '@';
+                    newMap[i][j + offset + 1] = '.';
+
+                    _start = (i, j + offset);
+                }
+                else
+                {
+                    newMap[i][j + offset] = '.';
+                    newMap[i][j + offset + 1] = '.';
+                }
+
+                offset++;
+            }
+        }
+
+        _input = newMap;
+    }
 }
